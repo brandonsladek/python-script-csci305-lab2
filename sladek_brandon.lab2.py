@@ -1,6 +1,5 @@
 from random import randint
 
-moveNumber = -1
 
 class Element:
 
@@ -227,11 +226,12 @@ class RandomBot(Player):
 
 class IterativeBot(Player):
 
-    global moveNumber
     moveNumber = -1
     
     def play(self):
-        moveNumber += 1
+        global moveNumber
+        moveNumber = moveNumber + 1
+        moveNumber = moveNumber % 5
         return moves[moveNumber]
         
 
@@ -240,7 +240,25 @@ class LastPlayBot(Player):
 
 
 class HumanPlayer(Player):
-    pass
+
+    def play(self):
+        
+        choice = -1
+
+        print("(1) : Rock")
+        print("(2) : Paper")
+        print("(3) : Scissors")
+        print("(4) : Lizard")
+        print("(5) : Spock")
+            
+        while (choice < 1 or choice > 5):
+            
+            choice = int(input("Enter your move: "))
+
+            if choice < 1 or choice > 5:
+                print("Invalid move. Please try again.")
+        
+        return moves[choice-1]
 
 
 class MyBot(Player):
@@ -259,11 +277,9 @@ class Main:
 
     moves = [rock, paper, scissors, lizard, spock]
 
-    p1 = StupidBot('StupidBot')
-    p2 = IterativeBot('IB')
+    p1 = HumanPlayer('HumanPlayer')
+    p2 = HumanPlayer('AnotherHumanPlayer')
     p1move = p1.play()
-    p2move = p2.play()
-    p3move = p2.play()
-    p4move = p2.play()
+    p2move = p1.play()
     print(p1move.compareTo(p2move))
-    print(p3move.compareTo(p4move))
+    
