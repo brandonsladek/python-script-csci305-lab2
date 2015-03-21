@@ -1,0 +1,74 @@
+Brandon Sladek
+CSCI305
+Lab 2 Questions
+
+1. To implement the LastPlayBot strategy, I used a dictionary where each entry was a pair
+where the key was the name of a bot and the value was the bot's move in the previous round. With this information, I was able to iterate through the dictionary (which only had two entries) and find the opponent's previous move by accessing the value at the key equal to the name of the opponent bot. Of course, I had to update the dictionary after every round, which I did in the main class after each bot picked a move.
+
+2. For the MyBot strategy, I chose to have the bot randomly select a move from a list of
+moves the opponent hadn't yet used. I figured that by doing this, assuming that the opponent bot would be more likely to pick a different move each time, the MyBot bot would be more likely to pick the same move as the opponent, since the list of possible moves would be getting smaller as the match continued. To implement this, I created a list for each bot that would keep track of the  moves the opponent hadn't used. I initialized the list with the first element being the bot's name, and the subsequent elements being each possible move. In the main method, I made it so that after each round, each bot's list would be updated by removing whichever move the opponent bot had chosen in the previous round. Each round, the MyBot bot would randomly pick a move from its list of moves the opponent hadn't yet used. I made the first element of each list be the bot's name (the bot who would pick from the list) so that I could ensure that the bot was using the correct list.
+
+3. Python is dynamically typed. This means that the types of variables in a program are
+determined at runtime rather than compile time. Because Python is dynamically typed, all 
+management of types must happen during interpretation. This is known as a "late-binding" time, and is the reason Python is not as fast as "early-binding" time languages like C. Python is also strongly typed, which means the type of a value is always known during runtime because every value's type cannot change, which makes it impossible to have a type error occur during runtime. In other words, in a strongly typed language like Python, all type errors are caught during compile time. Python is also object-oriented, which means it puts an emphasis on user-defined types that allow the program to be structured in a cleaner and less redundant way.
+
+SOURCES:
+	http://docs.cython.org/src/userguide/early_binding_for_speed.html
+	http://learnpythonthehardway.org/book/ex40.html
+	http://c2.com/cgi/wiki?WeakAndStrongTyping
+	
+4. Out of ten games against each, these are the final scores.
+
+HumanPlayer vs StupidBot: 10 - 0
+   			vs RandomBot: 5 - 4   (1 draw)
+			vs IterativeBot: 1 - 7   (2 draws)
+			vs LastPlayBot: 3 - 6 (1 draw)
+			vs MyBot: 4 - 4 (2 draws)
+			   
+Of course, if I were to not know that the StupidBot plays the same move every time, I probably would have lost at least once or twice before figuring out that the bot plays rock every time. So maybe 10 - 0 for that one is an exaggeration, 7 - 3 would be a better estimate. Regardless, it's safe to say it's easy to beat the StupidBot.
+
+The bout against the RandomBot was pretty close, 5 - 4. However, I noticed while playing
+the matches that the less random I made my choices, the more likely I was to lose. It seems like randomly picking moves is actually a decent strategy.
+
+The bout against the IterativeBot was surprising, I lost 1 - 7. In all of these bouts, besides the one against the StupidBot, I just randomly chose moves to better simulate a real game. Because of this, it looks like the IterativeBot strategy is better than the RandomBot strategy.
+
+The bout against the LastPlayBot was also surprising as I lost 3 - 6. Perhaps in the real world one would be able to figure out that the opponent was always choosing the previous move, in which case the score would likely be different. However, it looks like against the RandomBot strategy (as played by me choosing mostly random moves), the LastPlayBot strategy is better.
+
+Finally, the bout against MyBot ended in a tie. Go figure! It's interesting because with the MyBot strategy I was hoping to increase the likelihood of rounds ending in a tie, and thus potentially increasing the likelihood of winning, or at least not losing.
+
+5. A normal-form is a description of a game, and a normal form representation of a game 
+includes all possible and conceivable strategies and their payoffs for each player. Because this kind of a representation can be made, it is possible to design strategies that are more likely to win over others. It is possible to gain an advantage over a random strategy, and even easier to gain an advantage over a nonrandom strategy. Human players tend to be nonrandom, which is why some algorithms have a significant advantage over human players.
+
+6. One thing I like about Python is its use of whitespace to determine scope rather than
+explicit EOL characters (like semi-colons) or braces. It makes the code much more readable
+overall by not having as many strange characters all over the place, and by forcing the
+programmer to use proper indentation, and it's a simple rule for defining scope.
+
+7. I don't like Python's syntax for if statements, specifically not putting parentheses
+around the arguments and else-if being shortened to elif. I know this is really minor, but
+I think it makes the code a little less readable. But that might just be because I'm used 
+to programming in Java.
+
+8. I really enjoyed this lab. I liked learning Python syntax because it is so much different, and ultimately more human-friendly, than other languages. Also, I really like Python's data structures, such as lists and dictionaries. They are really intuitive, and the built-in methods that one can use with them are powerful and intuitive as well. I was excited to learn Python in this lab because I know it is an extremely popular language nowadays, and seems to be gaining popularity as well. When I interviewed with a recruiter from HP back in October, he said I should learn Python as my next language because it is going to be huge in the future. Well, in that case, I'm glad to be learning it!
+
+9. I think I spent about 10 hours on this lab, it wasn't as challenging as the Perl lab.
+
+10. I'm sure I will use Python again. I competed in Battlecode this year, which is a
+programming competition in which teams program AI bots in Java to control virtual "robots"
+in a battlefield scenario. Many of the successful teams write Python scripts to be able to
+test their bots extremely quickly. In next year's competition, I will probably write a 
+Python script to test my team's bot more quickly than we could by doing it manually.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

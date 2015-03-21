@@ -279,9 +279,10 @@ class LastPlayBot(Player):
         for key in lastPlays:
             # Find key for opponent in dictionary
             if key != self.name():
-                # If there hasn't been a previous move, return spock
+                # If there hasn't been a previous move, return random move
                 if lastPlays[key] == None:
-                    play = moves[4]
+                    index = randint(0,4)
+                    play = moves[index]
                 # lastPlays[key] returns the last move of the opponent
                 else:
                     play = lastPlays[key]
@@ -291,6 +292,8 @@ class LastPlayBot(Player):
 
 class HumanPlayer(Player):
 
+    play = None
+    
     def play(self):
         # User input variable, assign negative number to enter while loop at least once
         choice = -1
@@ -303,29 +306,85 @@ class HumanPlayer(Player):
         print("(5) : Spock")
 
         # Continuously prompt user while input is invalid
-        while (choice < 1 or choice > 5):
+        while ((choice is not int) and (choice < 1 or choice > 5)):
             
             # Read in user input
-            choice = int(input("Enter your move: "))
+            try:
+                choice = int(input("Enter your move: "))
+            except ValueError:
+                print("That's not an integer!")
 
             # If user input is invalid
             if choice < 1 or choice > 5:
                 print("Invalid move. Please try again.")
 
-            print()
-            
+        print()
+        
         # Subtract 1 from choice since moves array starts at index 0
-        return moves[choice-1]
+        play = moves[choice-1]
+
+        return play
 
 
 class MyBot(Player):
-    pass
 
+    play = None
+    
+    def pickRandomMove(self):
+        # Number is to be a random integer between 0 and 4 inclusive
+        number = randint(0,4)
+        
+        randomPlay = None
+    
+        if number == 0:
+            # Set play equal to rock
+            randomPlay = moves[0]
+            
+        elif number == 1:
+            # Set play equal to paper
+            randomPlay = moves[1]
 
+        elif number == 2:
+            # Set play equal to scissors
+            randomPlay = moves[2]
+
+        elif number == 3:
+            # Set play equal to lizard
+            randomPlay = moves[3]
+
+        else:
+            # Set play equal to spock
+            randomPlay = moves[4]
+
+        return randomPlay
+
+    # MyBot play method chooses a random move out of a list of moves that the opponent hasn't used
+    def play(self):
+        # Pick random move if it is the first round
+        if lastPlays[self.name()] == None:
+            play = self.pickRandomMove()
+
+        else:
+            # If p1PlayList is for player calling method
+            if p1PlayList[0] == self.name():
+                listSize = len(p1PlayList)
+                index = randint(1, listSize-1)
+                # Chosen play is chosen randomly from the list of moves the opponent hasn't used
+                if p1PlayList[index] is not None:
+                    play = p1PlayList[index]
+            else:
+                listSize = len(p2PlayList)
+                index = randint(1, listSize-1)
+                if p2PlayList[index] is not None:
+                    play = p2PlayList[index]
+
+        return play
+    
+        
 class Main:
 
     # Welcome the user
-    print("Welcome to Rock, Paper, Scissors, Lizard, Spock, implemented by Brandon Sladek\n")
+    print("\nWelcome to Rock, Paper, Scissors, Lizard, Spock, implemented by Brandon Sladek.")
     
     # Instantiate five possible moves
     rock = Rock('Rock')
@@ -346,114 +405,187 @@ class Main:
     # lastPlays will contain two entries that get updated every round with each bot's move
     lastPlays = {}
 
-    player1 = 0
-    player2 = 0
-    
-    # Prompt user to pick two players for simulated match
-    print("Please choose two players:")
-    print("\t(1) Human")
-    print("\t(2) StupidBot")
-    print("\t(3) RandomBot")
-    print("\t(4) IterativeBot")
-    print("\t(5) LastPlayBot")
-    print("\t(6) MyBot")
+    # Global lists to keep track of each player's move history
+    global p1PlayList
+    global p2PlayList
+    p1PlayList = []
+    p2PlayList = []
 
-    print()
+    anotherGame = 1
 
-    # Read in user input while input is invalid 
-    while ((player1 < 1 or player1 > 6) and (player2 < 1 or player2 > 6)):
-        player1 = int(input("Select player 1: "))
-        player2 = int(input("Select player 2: "))
+    # Repeat while user wants to play another game
+    while (anotherGame == 1):
 
-        if player1 < 1 or player1 > 6:
-            print("Invalid choice for player1. Please try again.")
-        if player2 < 1 or player2 > 6:
-            print("Invalid choice for player2. Please try again.")
+        print("\nNEW GAME\n")
 
-    # Instantiate player1 bot
-    if player1 == 1:
-        player1 = HumanPlayer('HumanPlayer')
-    elif player1 == 2:
-        player1 = StupidBot('StupidBot')
-    elif player1 == 3:
-        player1 = RandomBot('RandomBot')
-    elif player1 == 4:
-        player1 = IterativeBot('IterativeBot')
-    elif player1 == 5:
-        player1 = LastPlayBot('LastPlayBot')
-    else:
-        player1 = MyBot('MyBot')
+        # Prompt user to pick two players for simulated match
+        print("Please choose two players:")
+        print("\t(1) HumanPlayer")
+        print("\t(2) StupidBot")
+        print("\t(3) RandomBot")
+        print("\t(4) IterativeBot")
+        print("\t(5) LastPlayBot")
+        print("\t(6) MyBot")
 
-    # Instantiate player2 bot
-    if player2 == 1:
-        player2 = HumanPlayer('AnotherHumanPlayer')
-    elif player2 == 2:
-        player2 = StupidBot('AnotherStupidBot')
-    elif player2 == 3:
-        player2 = RandomBot('AnotherRandomBot')
-    elif player2 == 4:
-        player2 = IterativeBot('AnotherIterativeBot')
-    elif player2 == 5:
-        player2 = LastPlayBot('AnotherLastPlayBot')
-    else:
-        player2 = MyBot('AnotherMyBot')
-
-    print()
-
-    # Update lastPlays dictionary with bot names, bots still haven't made any moves
-    lastPlays = {player1.name() : None, player2.name() : None}
-    
-    # Print player types in match
-    print(player1.name(),"vs",player2.name(),". Go!")
-    
-    print()
-
-    # Variables to hold player scores
-    player1Score = 0
-    player2Score = 0
-
-    # Iterate through each of five rounds, printing results each round
-    for i in range(5):
-        print("Round",i+1,":")
-
-        # Each bot makes a move
-        p1move = player1.play()
-        p2move = player2.play()
-
-        # Save compareTo tuple to result variable
-        result = p1move.compareTo(p2move)
-        
-        # Update lastPlays dictionary with each bot's previous move
-        lastPlays[player1.name()] = p1move
-        lastPlays[player2.name()] = p2move
-
-        print("  Player 1 chose",p1move.name())
-        print("  Player 2 chose",p2move.name())
-        print(" ",result[0])
-
-        # Give point to winner if there is one
-        if result[1] == 'Win':
-            print("  Player 1 won the round")
-            player1Score += 1
-        elif result[1] == 'Lose':
-            print("  Player 2 won the round")
-            player2Score += 1
-        else:
-            print("  Round was a tie")
-            
         print()
-    # End of for loop
 
-    # Print the final score of the game
-    print("The score is",player1Score,"to",player2Score,".")
+        # Set player integers to 0 to initially enter while loop 
+        player1 = 0
+        player2 = 0
 
-    # Print the winner of the game
-    if player1Score > player2Score:
-        print("Player 1 won the game.")
-    elif player1Score < player2Score:
-        print("Player 2 won the game.")
-    else:
-        print("Game was a draw.")
-    
+        # Read in user input while input is invalid 
+        while ((player1 < 1 or player1 > 6) or (player2 < 1 or player2 > 6)):
+            try:
+                player1 = int(input("Select player 1: "))
+            except ValueError:
+                print("That's not an integer!")
+            try:
+                player2 = int(input("Select player 2: "))
+            except ValueError:
+                print("That's not an int!")
 
-    
+            if player1 < 1 or player1 > 6:
+                print("Invalid choice for player1. Please try again.")
+            if player2 < 1 or player2 > 6:
+                print("Invalid choice for player2. Please try again.")
+            
+        # Instantiate player1 bot
+        if player1 == 1:
+            player1 = HumanPlayer('HumanPlayer')
+        elif player1 == 2:
+            player1 = StupidBot('StupidBot')
+        elif player1 == 3:
+            player1 = RandomBot('RandomBot')
+        elif player1 == 4:
+            player1 = IterativeBot('IterativeBot')
+        elif player1 == 5:
+            player1 = LastPlayBot('LastPlayBot')
+        else:
+            player1 = MyBot('MyBot')
+
+        # Instantiate player2 bot, ensure players have different names
+        if player2 == 1:
+            if player1.name() == "HumanPlayer":
+                player2 = HumanPlayer('AnotherHumanPlayer')
+            else:
+                player2 = HumanPlayer('HumanPlayer')
+        elif player2 == 2:
+            if player1.name() == "StupidBot":
+                player2 = StupidBot('AnotherStupidBot')
+            else:
+                player2 = StupidBot('StupidBot')
+        elif player2 == 3:
+            if player1.name() == "RandomBot":
+                player2 = RandomBot('AnotherRandomBot')
+            else:
+                player2 = RandomBot('RandomBot')
+        elif player2 == 4:
+            if player1.name() == "IterativeBot":
+                player2 = IterativeBot('AnotherIterativeBot')
+            else:
+                player2 = IterativeBot('IterativeBot')
+        elif player2 == 5:
+            if player1.name() == "LastPlayBot":
+                player2 = LastPlayBot('AnotherLastPlayBot')
+            else:
+                player2 = LastPlayBot('LastPlayBot')
+        else:
+            if player1.name() == "MyBot":
+                player2 = MyBot('AnotherMyBot')
+            else:
+                player2 = MyBot('MyBot')
+
+        # Update PlayLists with bot name to keep track of which list is for which bot
+        p1PlayList.append(player1.name())
+        p2PlayList.append(player2.name())
+
+        # Fill lists with all possible moves, will remove moves as opponent calls them
+        p1PlayList.extend([moves[0], moves[1], moves[2], moves[3], moves[4]])
+        p2PlayList.extend([moves[0], moves[1], moves[2], moves[3], moves[4]])
+
+        print()
+
+        # Update lastPlays dictionary with bot names, bots still haven't made any moves
+        lastPlays = {player1.name() : None, player2.name() : None}
+        
+        # Print player types in match
+        print("%s vs %s. Go!" % (player1.name(), player2.name()))
+        
+        print()
+
+        # Variables to hold player scores
+        player1Score = 0
+        player2Score = 0
+
+        # Iterate through each of five rounds, printing results each round
+        for i in range(5):
+            print("Round %d:" % (i+1))
+
+            # Each bot makes a move
+            p1move = player1.play()
+            p2move = player2.play()
+
+            # Save compareTo tuple to result variable
+            try:
+                # Check if moves are instances of Element class
+                if isinstance(p1move, Element) and isinstance(p2move, Element):
+                    result = p1move.compareTo(p2move)
+            except AttributeError:
+                print("  Attribute Error...")
+            
+            # Update lastPlays dictionary with each bot's previous move
+            lastPlays[player1.name()] = p1move
+            lastPlays[player2.name()] = p2move
+
+            # Update PlayLists
+            if p2move in p1PlayList:
+                # Remove opponent's play from PlayList
+                p1PlayList.remove(p2move)
+
+            if p1move in p2PlayList:
+                p2PlayList.remove(p1move)
+
+            try:
+                # Check if moves are instances of Element class
+                if isinstance(p1move, Element) and isinstance(p2move, Element):
+                    print("  Player 1 chose",p1move.name())
+                    print("  Player 2 chose",p2move.name())
+            except AttributeError:
+                print("  AttributeError...")
+            
+            print(" ",result[0])
+
+            # Give point to winner if there is one
+            if result[1] == 'Win':
+                print("  Player 1 won the round")
+                player1Score += 1
+            elif result[1] == 'Lose':
+                print("  Player 2 won the round")
+                player2Score += 1
+            else:
+                print("  Round was a tie")
+                
+            print()
+        # End of for loop
+
+        # Print the final score of the game
+        print("The score is:")
+        print("\tPlayer 1: %d\n\tPlayer 2: %d\n" % (player1Score, player2Score))
+
+        # Print the winner of the game
+        if player1Score > player2Score:
+            print("Player 1 (%s) WON THE GAME!" % (player1.name()))
+        elif player1Score < player2Score:
+            print("Player 2 (%s) WON THE GAME!" % (player2.name()))
+        else:
+            print("GAME WAS A DRAW.")
+
+        # Ask user if they want to play another game
+        answer = input("\nWould you like to play another game? (yes or no)   ")
+
+        if answer == "no":
+            anotherGame = 0
+
+    # Good manners
+    print("\nGoodbye.")
+        
